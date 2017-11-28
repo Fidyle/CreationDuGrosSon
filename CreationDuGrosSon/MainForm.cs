@@ -12,6 +12,8 @@ using System.Diagnostics;
 using System.Xml.Linq;
 using NReco.VideoConverter;
 using System.Xml;
+using System.Reflection;
+using WMPLib;
 
 namespace CreationDuGrosSon
 {
@@ -22,6 +24,7 @@ namespace CreationDuGrosSon
          * makes it easier to manage data in the datagridview
          * ***/
         private BindingSource bs = new BindingSource();
+        WindowsMediaPlayer player = new WindowsMediaPlayer();
         public MainForm()
         {
             InitializeComponent();
@@ -29,6 +32,10 @@ namespace CreationDuGrosSon
             ToolTip toolTipDirectory = new ToolTip();
             toolTipDirectory.ShowAlways = true;
             toolTipDirectory.SetToolTip(btnChooseDirectory, "A directory named SoundsForSoundBlock will be created in the specified directory");
+
+            player.URL = "backGroundMusic.mp3";
+            player.settings.volume = 20;
+            player.controls.play();
         }
 
         /***
@@ -61,6 +68,10 @@ namespace CreationDuGrosSon
                     MessageBox.Show("Error: Couldn't read the file(s). Error message: " + ex.Message);
                 }
             }
+            foreach(Sound asound in bs)
+            {
+                Console.WriteLine(asound.FilePath);
+            }
         }
 
         
@@ -73,27 +84,30 @@ namespace CreationDuGrosSon
         {
             
             FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
-            if(folderBrowser.ShowDialog() == DialogResult.OK)
+            if(folderBrowser.ShowDialog() == DialogResult.OK )
             {
-                if (tbOutputDirectory.Text != "")
+                if(tbOutputDirectory.Text != "")
                 {
-                    if (!Directory.EnumerateFiles(tbOutputDirectory.Text).Any() && Directory.GetDirectories(tbOutputDirectory.Text).Equals(new String[] {"Audio","Data" }))
+                    Directory.Delete(tbOutputDirectory.Text, true);
+                }
+                if (Directory.Exists(folderBrowser.SelectedPath + @"\SoundsForSoundBlock"))
+                {
+                   if(MessageBox.Show("The selected directory "+folderBrowser.SelectedPath+ @"\SoundsForSoundBlock already exists. It needs to be deleted do you want to delete it now?"
+                            , "Directory already exists"
+                            , MessageBoxButtons.YesNoCancel
+                            , MessageBoxIcon.Question) == DialogResult.Yes)
                     {
-                        Directory.Delete(tbOutputDirectory.Text, true);
+                        Directory.Delete(folderBrowser.SelectedPath + @"\SoundsForSoundBlock", true);
                     }
                     else
                     {
-                        MessageBox.Show("Some subfolders were present in the folder \"" + tbOutputDirectory.Text + "\"\n" +
-                            "They were not deleted, though only the folders \"Audio\" and \"Data\" should be present for the mod to work"
-                            , "Information"
-                            , MessageBoxButtons.OK
-                            , MessageBoxIcon.Information);
+                        return;
                     }
                 }
-                tbOutputDirectory.Text = folderBrowser.SelectedPath + "\\SoundsForSoundBlock\\";
+                tbOutputDirectory.Text = folderBrowser.SelectedPath + @"\SoundsForSoundBlock";
                 Directory.CreateDirectory(tbOutputDirectory.Text);
-                Directory.CreateDirectory(tbOutputDirectory.Text + "\\Audio");
-                Directory.CreateDirectory(tbOutputDirectory.Text + "\\Data");
+                Directory.CreateDirectory(tbOutputDirectory.Text + @"\Audio");
+                Directory.CreateDirectory(tbOutputDirectory.Text + @"\Data");
             }
         }
 
@@ -142,11 +156,10 @@ namespace CreationDuGrosSon
                     foreach(Sound aSound in bs)
                     {
                         //Handle file convertion here
-                        outputPath = tbOutputDirectory.Text+@"\Audio\" + aSound.NameToShow + ".wmv";
-                        
+                        outputPath = tbOutputDirectory.Text + @"\Audio\" + aSound.NameToShow + ".wmv";
                         if (await convertFile(aSound.FilePath, outputPath, Format.wmv) == 1)
                         {
-                            pbTotal.Value += Convert.ToInt32(pbConvert.Value / bs.Count);
+                            pbTotal.Value = (bs.IndexOf(aSound)+1)*100 / bs.Count;
                         }
 
                         //Handle creation of xml part needing the loop here
@@ -157,13 +170,13 @@ namespace CreationDuGrosSon
                                         "<TypeId>AudioDefinition</TypeId >" +
                                         "<SubtypeId>SBMOD" + bs.IndexOf(aSound) + "</SubtypeId>" +
                                     "</Id>" +
-                                    "<Category > Sb </Category>" +
-                                    "<MaxDistance> 100 </MaxDistance>" +
-                                    "<Volume> 1.00 </Volume>" +
-                                    "<Loopable> true </Loopable>" +
+                                    "<Category>Sb</Category>" +
+                                    "<MaxDistance>"+aSound.MaxDistance+"</MaxDistance>" +
+                                    "<Volume>"+aSound.Volume+"</Volume>" +
+                                    "<Loopable>"+aSound.Loopable.ToString()+"</Loopable>" +
                                     "<Waves>" +
                                         "<Wave Type = \"D3\">" +
-                                            "<Start> Audio\\"+aSound.NameToShow+".xwm </Start>" +
+                                            "<Start>Audio\\"+aSound.NameToShow+".xwm</Start>" +
                                         "</Wave>" +
                                     "</Waves>" +
                                 "</Sound>";
@@ -210,14 +223,16 @@ namespace CreationDuGrosSon
                     doc.Save(writer);
                     writer.Close();
 
+                    if(MessageBox.Show("The mod has been created! Do you want to open the directory ?", "Mod created", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                    {
+                        Process.Start("explorer.exe", tbOutputDirectory.Text);
+                    }
+                    pbConvert.Value = 0;
+                    pbTotal.Value = 0;
                 }
             }
         }
 
-        private async void button1_Click(object sender, EventArgs e)
-        {
-            await convertFile(@"F:\Musique\Deja Vu.mp3", @"F:\Musique\Deja Vu.wmv", Format.wmv);
-        }
         
         /***
          * Conversion of all the files to wmv audio files
@@ -242,6 +257,18 @@ namespace CreationDuGrosSon
             {
                 pbConvert.Value = Convert.ToInt32(((double)e.Processed.Ticks / (double)e.TotalDuration.Ticks) * 100);
             }));
+        }
+
+        private void btnMusic_Click(object sender, EventArgs e)
+        {
+            if(player.playState == WMPPlayState.wmppsPlaying)
+            {
+                player.controls.pause();
+            }
+            else
+            {
+                player.controls.play();
+            }
         }
     }
 }
