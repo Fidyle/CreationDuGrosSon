@@ -193,8 +193,6 @@ namespace CreationDuGrosSon
 
                     writer.WriteStartDocument();
                     writer.WriteStartElement("Definitions");
-                    /*writer.WriteAttributeString("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-                    writer.WriteAttributeString("xmlns:xsd", "http://www.w3.org/2001/XMLSchema");*/
                         writer.WriteStartElement("SoundCategories");
                             writer.WriteStartElement("SoundCategory");
                                 writer.WriteStartElement("id");
@@ -202,19 +200,13 @@ namespace CreationDuGrosSon
                                     writer.WriteElementString("SubtypeId", "SoundsForSoundBlock");
                                 writer.WriteEndElement();
                                 writer.WriteStartElement("Sounds");
-                    //write elements here
                                     writer.WriteRaw(soundDescXml);
                                 writer.WriteEndElement();
                             writer.WriteEndElement();
                         writer.WriteEndElement();
                     writer.WriteStartElement("Sounds");
-                    //write element here
                         writer.WriteRaw(sounds);
                     writer.WriteEndElement();
-
-                    /*writer.WriteStartElement("Foo");
-                    writer.WriteAttributeString("Bar", "Some & value");
-                    writer.WriteElementString("Nested", "data");*/
 
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
