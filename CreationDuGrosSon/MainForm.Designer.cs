@@ -30,28 +30,31 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvFiles = new System.Windows.Forms.DataGridView();
             this.btnAddFiles = new System.Windows.Forms.Button();
             this.tbxInfo = new System.Windows.Forms.TextBox();
             this.btnCreateMod = new System.Windows.Forms.Button();
             this.btnChooseDirectory = new System.Windows.Forms.Button();
             this.gbButtons = new System.Windows.Forms.GroupBox();
+            this.btnMusic = new System.Windows.Forms.Button();
+            this.pbTotal = new System.Windows.Forms.ProgressBar();
             this.pbConvert = new System.Windows.Forms.ProgressBar();
             this.btnRemoveFIles = new System.Windows.Forms.Button();
             this.tbOutputDirectory = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.pbTotal = new System.Windows.Forms.ProgressBar();
             this.filePathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameToShowDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.maxDistanceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.volumeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.loopableDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.soundBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.soundBindingSource1 = new System.Windows.Forms.BindingSource(this.components);
-            this.soundBindingSource2 = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).BeginInit();
             this.gbButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.soundBindingSource1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.soundBindingSource2)).BeginInit();
             this.SuspendLayout();
             // 
             // dgvFiles
@@ -67,7 +70,10 @@
             this.dgvFiles.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.filePathDataGridViewTextBoxColumn,
             this.nameToShowDataGridViewTextBoxColumn,
-            this.typeDataGridViewTextBoxColumn});
+            this.typeDataGridViewTextBoxColumn,
+            this.maxDistanceDataGridViewTextBoxColumn,
+            this.volumeDataGridViewTextBoxColumn,
+            this.loopableDataGridViewCheckBoxColumn});
             this.dgvFiles.DataSource = this.soundBindingSource;
             this.dgvFiles.Location = new System.Drawing.Point(12, 12);
             this.dgvFiles.Name = "dgvFiles";
@@ -127,6 +133,7 @@
             // 
             this.gbButtons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbButtons.Controls.Add(this.btnMusic);
             this.gbButtons.Controls.Add(this.pbTotal);
             this.gbButtons.Controls.Add(this.pbConvert);
             this.gbButtons.Controls.Add(this.btnRemoveFIles);
@@ -139,6 +146,27 @@
             this.gbButtons.Size = new System.Drawing.Size(560, 108);
             this.gbButtons.TabIndex = 6;
             this.gbButtons.TabStop = false;
+            // 
+            // btnMusic
+            // 
+            this.btnMusic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMusic.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.btnMusic.Location = new System.Drawing.Point(404, 19);
+            this.btnMusic.Name = "btnMusic";
+            this.btnMusic.Size = new System.Drawing.Size(150, 23);
+            this.btnMusic.TabIndex = 11;
+            this.btnMusic.Text = "Stop/Restart music";
+            this.btnMusic.UseVisualStyleBackColor = false;
+            this.btnMusic.Click += new System.EventHandler(this.btnMusic_Click);
+            // 
+            // pbTotal
+            // 
+            this.pbTotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pbTotal.Location = new System.Drawing.Point(162, 77);
+            this.pbTotal.Name = "pbTotal";
+            this.pbTotal.Size = new System.Drawing.Size(392, 10);
+            this.pbTotal.TabIndex = 10;
             // 
             // pbConvert
             // 
@@ -180,52 +208,63 @@
             this.label1.TabIndex = 7;
             this.label1.Text = "Click on gray areas to modify element";
             // 
-            // pbTotal
-            // 
-            this.pbTotal.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pbTotal.Location = new System.Drawing.Point(162, 77);
-            this.pbTotal.Name = "pbTotal";
-            this.pbTotal.Size = new System.Drawing.Size(392, 10);
-            this.pbTotal.TabIndex = 10;
-            // 
             // filePathDataGridViewTextBoxColumn
             // 
             this.filePathDataGridViewTextBoxColumn.DataPropertyName = "FilePath";
-            this.filePathDataGridViewTextBoxColumn.FillWeight = 164.2729F;
-            this.filePathDataGridViewTextBoxColumn.HeaderText = "FilePath";
+            this.filePathDataGridViewTextBoxColumn.FillWeight = 20F;
+            this.filePathDataGridViewTextBoxColumn.HeaderText = "File Path";
             this.filePathDataGridViewTextBoxColumn.Name = "filePathDataGridViewTextBoxColumn";
             this.filePathDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // nameToShowDataGridViewTextBoxColumn
             // 
             this.nameToShowDataGridViewTextBoxColumn.DataPropertyName = "NameToShow";
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Silver;
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.nameToShowDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
-            this.nameToShowDataGridViewTextBoxColumn.FillWeight = 104.884F;
-            this.nameToShowDataGridViewTextBoxColumn.HeaderText = "NameToShow";
+            this.nameToShowDataGridViewTextBoxColumn.FillWeight = 20F;
+            this.nameToShowDataGridViewTextBoxColumn.HeaderText = "Name to show";
             this.nameToShowDataGridViewTextBoxColumn.Name = "nameToShowDataGridViewTextBoxColumn";
-            this.nameToShowDataGridViewTextBoxColumn.ToolTipText = "Name to show in game";
             // 
             // typeDataGridViewTextBoxColumn
             // 
             this.typeDataGridViewTextBoxColumn.DataPropertyName = "Type";
-            this.typeDataGridViewTextBoxColumn.FillWeight = 30.84314F;
+            this.typeDataGridViewTextBoxColumn.FillWeight = 10F;
             this.typeDataGridViewTextBoxColumn.HeaderText = "Type";
             this.typeDataGridViewTextBoxColumn.Name = "typeDataGridViewTextBoxColumn";
             this.typeDataGridViewTextBoxColumn.ReadOnly = true;
             // 
+            // maxDistanceDataGridViewTextBoxColumn
+            // 
+            this.maxDistanceDataGridViewTextBoxColumn.DataPropertyName = "MaxDistance";
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.maxDistanceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.maxDistanceDataGridViewTextBoxColumn.FillWeight = 15F;
+            this.maxDistanceDataGridViewTextBoxColumn.HeaderText = "Max distance";
+            this.maxDistanceDataGridViewTextBoxColumn.Name = "maxDistanceDataGridViewTextBoxColumn";
+            // 
+            // volumeDataGridViewTextBoxColumn
+            // 
+            this.volumeDataGridViewTextBoxColumn.DataPropertyName = "Volume";
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.volumeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            this.volumeDataGridViewTextBoxColumn.FillWeight = 10F;
+            this.volumeDataGridViewTextBoxColumn.HeaderText = "Volume";
+            this.volumeDataGridViewTextBoxColumn.Name = "volumeDataGridViewTextBoxColumn";
+            // 
+            // loopableDataGridViewCheckBoxColumn
+            // 
+            this.loopableDataGridViewCheckBoxColumn.DataPropertyName = "Loopable";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            dataGridViewCellStyle4.NullValue = false;
+            this.loopableDataGridViewCheckBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            this.loopableDataGridViewCheckBoxColumn.FillWeight = 10F;
+            this.loopableDataGridViewCheckBoxColumn.HeaderText = "Loopable";
+            this.loopableDataGridViewCheckBoxColumn.Name = "loopableDataGridViewCheckBoxColumn";
+            // 
             // soundBindingSource
             // 
             this.soundBindingSource.DataSource = typeof(CreationDuGrosSon.Sound);
-            // 
-            // soundBindingSource1
-            // 
-            this.soundBindingSource1.DataSource = typeof(CreationDuGrosSon.Sound);
-            // 
-            // soundBindingSource2
-            // 
-            this.soundBindingSource2.DataSource = typeof(CreationDuGrosSon.Sound);
             // 
             // MainForm
             // 
@@ -243,8 +282,6 @@
             this.gbButtons.ResumeLayout(false);
             this.gbButtons.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.soundBindingSource1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.soundBindingSource2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -258,16 +295,18 @@
         private System.Windows.Forms.Button btnChooseDirectory;
         private System.Windows.Forms.GroupBox gbButtons;
         private System.Windows.Forms.TextBox tbOutputDirectory;
-        private System.Windows.Forms.BindingSource soundBindingSource;
-        private System.Windows.Forms.BindingSource soundBindingSource1;
-        private System.Windows.Forms.BindingSource soundBindingSource2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn filePathDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn nameToShowDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn typeDataGridViewTextBoxColumn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnRemoveFIles;
         private System.Windows.Forms.ProgressBar pbConvert;
         private System.Windows.Forms.ProgressBar pbTotal;
+        private System.Windows.Forms.BindingSource soundBindingSource;
+        private System.Windows.Forms.Button btnMusic;
+        private System.Windows.Forms.DataGridViewTextBoxColumn filePathDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameToShowDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn typeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn maxDistanceDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn volumeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn loopableDataGridViewCheckBoxColumn;
     }
 }
 
