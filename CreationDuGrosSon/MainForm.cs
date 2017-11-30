@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Xml.Linq;
 using NReco.VideoConverter;
 using System.Xml;
 using System.Reflection;
-using WMPLib;
+using System.Media;
 
 namespace CreationDuGrosSon
 {
@@ -24,18 +18,24 @@ namespace CreationDuGrosSon
          * makes it easier to manage data in the datagridview
          * ***/
         private BindingSource bs = new BindingSource();
-        WindowsMediaPlayer player = new WindowsMediaPlayer();
+        private SoundPlayer soundPlayer;
+        private bool playState;
+        
         public MainForm()
         {
             InitializeComponent();
 
-            ToolTip toolTipDirectory = new ToolTip();
-            toolTipDirectory.ShowAlways = true;
+            ToolTip toolTipDirectory = new ToolTip
+            {
+                ShowAlways = true
+            };
             toolTipDirectory.SetToolTip(btnChooseDirectory, "A directory named SoundsForSoundBlock will be created in the specified directory");
-
-            player.URL = "backGroundMusic.mp3";
-            player.settings.volume = 20;
-            player.controls.play();
+            Assembly assembly = Assembly.GetCallingAssembly();
+            Stream stream = assembly.GetManifestResourceStream("CreationDuGrosSon.elevatorWav.wav");
+            soundPlayer = new SoundPlayer(stream);
+            soundPlayer.PlayLooping();
+            soundPlayer.Play();
+            playState = true;
         }
 
         /***
@@ -43,17 +43,19 @@ namespace CreationDuGrosSon
          * ***/
         private void btnAddFiles_Click(object sender, EventArgs e)
         {
-            OpenFileDialog fileChooser = new OpenFileDialog();
-            fileChooser.InitialDirectory = "c:\\";
-            /* A set of different audio and video files
-             * Obviously only the audio part will be used
-            */
-            fileChooser.Filter = "Audio/Video files (*.mp3;*.mp4;*.avi;*.wav;*.wma;*.m4a;*.ogg;*.flac)|*.mp3;*.mp4;*.avi;*.wav;*.wma*.m4a;*.ogg;*.flac|" +
-                "All files (*.*)|*.*";
-            fileChooser.RestoreDirectory = true;
-            fileChooser.Multiselect = true;
-            
-            if(fileChooser.ShowDialog() == DialogResult.OK)
+            OpenFileDialog fileChooser = new OpenFileDialog
+            {
+                InitialDirectory = "c:\\",
+                /* A set of different audio and video files
+                 * Obviously only the audio part will be used
+                */
+                Filter = "Audio/Video files (*.mp3;*.mp4;*.avi;*.wav;*.wma;*.m4a;*.ogg;*.flac)|*.mp3;*.mp4;*.avi;*.wav;*.wma*.m4a;*.ogg;*.flac|" +
+                "All files (*.*)|*.*",
+                RestoreDirectory = true,
+                Multiselect = true
+            };
+
+            if (fileChooser.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
@@ -73,8 +75,6 @@ namespace CreationDuGrosSon
                 Console.WriteLine(asound.FilePath);
             }
         }
-
-        
         
         /***
          * Let the user choose the place where the mod will be created 
@@ -253,14 +253,16 @@ namespace CreationDuGrosSon
 
         private void btnMusic_Click(object sender, EventArgs e)
         {
-            if(player.playState == WMPPlayState.wmppsPlaying)
+            if (playState)
             {
-                player.controls.pause();
+                soundPlayer.Stop();
             }
             else
             {
-                player.controls.play();
+                soundPlayer.PlayLooping();
             }
+            playState = !playState;
+            
         }
     }
 }

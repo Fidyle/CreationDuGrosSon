@@ -11,6 +11,7 @@ namespace CreationDuGrosSon
         /// <summary>
         /// Point d'entrée principal de l'application.
         /// </summary>
+        
         [STAThread]
         static void Main()
         {
