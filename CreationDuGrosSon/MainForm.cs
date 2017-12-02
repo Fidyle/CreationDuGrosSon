@@ -56,8 +56,7 @@ namespace CreationDuGrosSon
                 /* set of supported audio and video files
                  * Obviously only the audio part will be used
                 */
-                Filter = "Audio/Video files (*.mp3;*.mp4;*.avi;*.wav;*.wma;*.m4a;*.ogg;*.flac)|*.mp3;*.mp4;*.avi;*.wav;*.wma*.m4a;*.ogg;*.flac|" +
-                "All files (*.*)|*.*",
+                Filter = "Audio/Video files (*.mp3;*.mp4;*.avi;*.wav;*.wma;*.m4a;*.ogg;*.flac)|*.mp3;*.mp4;*.avi;*.wav;*.wma*.m4a;*.ogg;*.flac",
                 RestoreDirectory = true,
                 Multiselect = true
             };
