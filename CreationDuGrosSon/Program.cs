@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace CreationDuGrosSon
@@ -11,6 +9,7 @@ namespace CreationDuGrosSon
         /// <summary>
         /// Point d'entrée principal de l'application.
         /// </summary>
+        
         [STAThread]
         static void Main()
         {

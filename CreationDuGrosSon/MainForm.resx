@@ -120,4 +120,16 @@
   <metadata name="soundBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="tbxInfo.Text" xml:space="preserve">
+    <value>Supported formats:
+- Audio: WAV | MP3 | FLAC | WMA | M4A | OGG
+- Video: MP4 | AVI (Only the audio part will be converted)
+
+How to: 
+1 - Select audio files you want in you mod
+2 - Modify value as you wish (Name to show in game, distance, volume, loopable)
+3 - Select where you want the mod to be created (you can move it away later)
+--Mods directory is usually "C:\Users\&lt;UserName&gt;\AppData\Roaming\SpaceEngineers\Mods"
+4 - Create</value>
+  </data>
 </root>

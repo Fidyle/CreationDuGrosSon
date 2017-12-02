@@ -1,19 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Xml.Linq;
 using NReco.VideoConverter;
 using System.Xml;
 using System.Reflection;
-using WMPLib;
+using System.Media;
+using System.Linq;
 
 namespace CreationDuGrosSon
 {
@@ -23,19 +18,31 @@ namespace CreationDuGrosSon
          * Source bind to the datagridview (dgvFiles)
          * makes it easier to manage data in the datagridview
          * ***/
-        private BindingSource bs = new BindingSource();
-        WindowsMediaPlayer player = new WindowsMediaPlayer();
+        private BindingSource bs;
+        private SoundPlayer soundPlayer;
+        private bool playState;
+        
         public MainForm()
         {
             InitializeComponent();
 
-            ToolTip toolTipDirectory = new ToolTip();
-            toolTipDirectory.ShowAlways = true;
+            //bs will 'contain' the data of the datagridview
+            bs = (BindingSource)dgvFiles.DataSource;
+            bs = soundBindingSource;
+            
+            //just a tooltip
+            ToolTip toolTipDirectory = new ToolTip
+            {
+                ShowAlways = true
+            };
             toolTipDirectory.SetToolTip(btnChooseDirectory, "A directory named SoundsForSoundBlock will be created in the specified directory");
 
-            player.URL = "backGroundMusic.mp3";
-            player.settings.volume = 20;
-            player.controls.play();
+            //background music
+            Assembly assembly = Assembly.GetCallingAssembly();
+            Stream stream = assembly.GetManifestResourceStream("CreationDuGrosSon.elevatorWav.wav");
+            soundPlayer = new SoundPlayer(stream);
+            soundPlayer.PlayLooping();
+            playState = true;
         }
 
         /***
@@ -43,38 +50,46 @@ namespace CreationDuGrosSon
          * ***/
         private void btnAddFiles_Click(object sender, EventArgs e)
         {
-            OpenFileDialog fileChooser = new OpenFileDialog();
-            fileChooser.InitialDirectory = "c:\\";
-            /* A set of different audio and video files
-             * Obviously only the audio part will be used
-            */
-            fileChooser.Filter = "Audio/Video files (*.mp3;*.mp4;*.avi;*.wav;*.wma;*.m4a;*.ogg;*.flac)|*.mp3;*.mp4;*.avi;*.wav;*.wma*.m4a;*.ogg;*.flac|" +
-                "All files (*.*)|*.*";
-            fileChooser.RestoreDirectory = true;
-            fileChooser.Multiselect = true;
-            
-            if(fileChooser.ShowDialog() == DialogResult.OK)
+            OpenFileDialog fileChooser = new OpenFileDialog
+            {
+                InitialDirectory = "c:\\",
+                /* set of supported audio and video files
+                 * Obviously only the audio part will be used
+                */
+                Filter = "Audio/Video files (*.mp3;*.mp4;*.avi;*.wav;*.wma;*.m4a;*.ogg;*.flac)|*.mp3;*.mp4;*.avi;*.wav;*.wma*.m4a;*.ogg;*.flac|" +
+                "All files (*.*)|*.*",
+                RestoreDirectory = true,
+                Multiselect = true
+            };
+
+            if (fileChooser.ShowDialog() == DialogResult.OK)
             {
                 try
                 {
+                    //Check if file already in the table (same file path) before adding
+                    bool check;
                     foreach (String path in fileChooser.FileNames)
                     {
-                        bs.Add(new Sound(path));
+                        check = false;
+                        foreach(Sound s in bs)
+                        {
+                            if(s.FilePath == path)
+                            {
+                                check = true;
+                            }
+                        }
+
+                        if (!check)
+                        {
+                            bs.Add(new Sound(path));
+                        }
                     }
-                    
-                    dgvFiles.DataSource = bs;
                 } catch (Exception ex)
                 {
                     MessageBox.Show("Error: Couldn't read the file(s). Error message: " + ex.Message);
                 }
             }
-            foreach(Sound asound in bs)
-            {
-                Console.WriteLine(asound.FilePath);
-            }
         }
-
-        
         
         /***
          * Let the user choose the place where the mod will be created 
@@ -82,14 +97,9 @@ namespace CreationDuGrosSon
          * ***/
         private void btnChooseDirectory_Click(object sender, EventArgs e)
         {
-            
             FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
             if(folderBrowser.ShowDialog() == DialogResult.OK )
             {
-                if(tbOutputDirectory.Text != "")
-                {
-                    Directory.Delete(tbOutputDirectory.Text, true);
-                }
                 if (Directory.Exists(folderBrowser.SelectedPath + @"\SoundsForSoundBlock"))
                 {
                    if(MessageBox.Show("The selected directory "+folderBrowser.SelectedPath+ @"\SoundsForSoundBlock already exists. It needs to be deleted do you want to delete it now?"
@@ -97,17 +107,25 @@ namespace CreationDuGrosSon
                             , MessageBoxButtons.YesNoCancel
                             , MessageBoxIcon.Question) == DialogResult.Yes)
                     {
-                        Directory.Delete(folderBrowser.SelectedPath + @"\SoundsForSoundBlock", true);
+                        try
+                        {
+                            Directory.Delete(folderBrowser.SelectedPath + @"\SoundsForSoundBlock", true);
+                            tbOutputDirectory.Text = folderBrowser.SelectedPath + @"\SoundsForSoundBlock";
+                        } catch(Exception ex)
+                        {
+                            MessageBox.Show(@"The app couldn't remove the directory """ + folderBrowser.SelectedPath + @"\SoundsForSoundBlock\"" Make sure the app has the right to do so (antivirus for example can block such actions) or delete it manually. Error message: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                     else
                     {
                         return;
                     }
                 }
-                tbOutputDirectory.Text = folderBrowser.SelectedPath + @"\SoundsForSoundBlock";
-                Directory.CreateDirectory(tbOutputDirectory.Text);
-                Directory.CreateDirectory(tbOutputDirectory.Text + @"\Audio");
-                Directory.CreateDirectory(tbOutputDirectory.Text + @"\Data");
+                else
+                {
+                    tbOutputDirectory.Text = folderBrowser.SelectedPath + @"\SoundsForSoundBlock";
+                }
+                
             }
         }
 
@@ -131,6 +149,7 @@ namespace CreationDuGrosSon
         {
             pbConvert.Value = 0;
             pbTotal.Value = 0;
+            //check if output direcotry is chosen and if there's files in teh table
             if (dgvFiles.Rows.Count == 0 || tbOutputDirectory.Text == "")
             {
                 MessageBox.Show("You need to choose at least one file and an output directory for the created mod", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -138,10 +157,8 @@ namespace CreationDuGrosSon
             else
             {
                 String message = "Are you sure you want to create the mod?\nThe following songs will converted for the creation of the mod (the original files won't move): \n\n";
-                //foreach (DataGridViewRow dgvRow in dgvFiles.Rows)
                 foreach (var a in bs)
                 {
-                    //message += "- " + ((Sound)dgvRow.DataBoundItem).NameToShow + "\n";
                     message += "- " + ((Sound)a).NameToShow + "\n";
                 }
 
@@ -150,6 +167,10 @@ namespace CreationDuGrosSon
                                          MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                 if (confirmResult == DialogResult.Yes)
                 {
+                    Directory.CreateDirectory(tbOutputDirectory.Text);
+                    Directory.CreateDirectory(tbOutputDirectory.Text + @"\Audio");
+                    Directory.CreateDirectory(tbOutputDirectory.Text + @"\Data");
+
                     String outputPath;
                     String soundDescXml = "";
                     String sounds  = "";
@@ -193,8 +214,6 @@ namespace CreationDuGrosSon
 
                     writer.WriteStartDocument();
                     writer.WriteStartElement("Definitions");
-                    /*writer.WriteAttributeString("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-                    writer.WriteAttributeString("xmlns:xsd", "http://www.w3.org/2001/XMLSchema");*/
                         writer.WriteStartElement("SoundCategories");
                             writer.WriteStartElement("SoundCategory");
                                 writer.WriteStartElement("id");
@@ -202,19 +221,13 @@ namespace CreationDuGrosSon
                                     writer.WriteElementString("SubtypeId", "SoundsForSoundBlock");
                                 writer.WriteEndElement();
                                 writer.WriteStartElement("Sounds");
-                    //write elements here
                                     writer.WriteRaw(soundDescXml);
                                 writer.WriteEndElement();
                             writer.WriteEndElement();
                         writer.WriteEndElement();
                     writer.WriteStartElement("Sounds");
-                    //write element here
                         writer.WriteRaw(sounds);
                     writer.WriteEndElement();
-
-                    /*writer.WriteStartElement("Foo");
-                    writer.WriteAttributeString("Bar", "Some & value");
-                    writer.WriteElementString("Nested", "data");*/
 
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
@@ -229,6 +242,9 @@ namespace CreationDuGrosSon
                     }
                     pbConvert.Value = 0;
                     pbTotal.Value = 0;
+
+                    //Deletes temporary file created by NReco to convert audio
+                    File.Delete(Application.StartupPath + @"\ffmpeg.exe");
                 }
             }
         }
@@ -241,11 +257,18 @@ namespace CreationDuGrosSon
          * ***/
         private async Task<int> convertFile(String pathOfFile, String pathOutput, String format)
         {
-            FFMpegConverter ffmpeg = new FFMpegConverter();
-            ffmpeg.ConvertProgress += updateProgress;
-            //Creates a task for void func
-            await Task.Factory.StartNew(() => ffmpeg.ConvertMedia(pathOfFile, pathOutput, format));
-            return 1;
+            try
+            {
+                FFMpegConverter ffmpeg = new FFMpegConverter();
+                ffmpeg.ConvertProgress += updateProgress;
+                //Creates a task for void func
+                await Task.Factory.StartNew(() => ffmpeg.ConvertMedia(pathOfFile, null, pathOutput, format, new ConvertSettings() { CustomOutputArgs = "-vn"}));
+                return 1;
+            } catch (Exception ex)
+            {
+                MessageBox.Show("There was an error during the convertion of the files. Make sure that the app has the right to modify files.\n\n Error message: " +ex.Message,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                return 0;
+            }
         }
 
         /***
@@ -261,14 +284,15 @@ namespace CreationDuGrosSon
 
         private void btnMusic_Click(object sender, EventArgs e)
         {
-            if(player.playState == WMPPlayState.wmppsPlaying)
+            if (playState)
             {
-                player.controls.pause();
+                soundPlayer.Stop();
             }
             else
             {
-                player.controls.play();
+                soundPlayer.PlayLooping();
             }
+            playState = !playState;
         }
     }
 }
