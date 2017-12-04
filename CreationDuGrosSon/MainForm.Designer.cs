@@ -42,13 +42,13 @@
             this.btnRemoveFIles = new System.Windows.Forms.Button();
             this.tbOutputDirectory = new System.Windows.Forms.TextBox();
             this.lblTable = new System.Windows.Forms.Label();
-            this.soundBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.filePathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameToShowDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.maxDistanceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.volumeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.loopableDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.soundBindingSource = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).BeginInit();
             this.gbButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundBindingSource)).BeginInit();
@@ -205,10 +205,6 @@
             this.lblTable.TabIndex = 7;
             this.lblTable.Text = "Click on gray areas to modify element";
             // 
-            // soundBindingSource
-            // 
-            this.soundBindingSource.DataSource = typeof(CreationDuGrosSon.Sound);
-            // 
             // filePathDataGridViewTextBoxColumn
             // 
             this.filePathDataGridViewTextBoxColumn.DataPropertyName = "FilePath";
@@ -244,6 +240,10 @@
             this.loopableDataGridViewCheckBoxColumn.DataPropertyName = "Loopable";
             this.loopableDataGridViewCheckBoxColumn.HeaderText = "Loopable";
             this.loopableDataGridViewCheckBoxColumn.Name = "loopableDataGridViewCheckBoxColumn";
+            // 
+            // soundBindingSource
+            // 
+            this.soundBindingSource.DataSource = typeof(CreationDuGrosSon.Sound);
             // 
             // MainForm
             // 

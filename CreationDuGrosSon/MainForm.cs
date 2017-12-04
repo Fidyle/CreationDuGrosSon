@@ -103,14 +103,17 @@ namespace CreationDuGrosSon
             {
                 if (Directory.Exists(folderBrowser.SelectedPath + @"\SoundsForSoundBlock"))
                 {
-                   if(MessageBox.Show("The selected directory "+folderBrowser.SelectedPath+ @"\SoundsForSoundBlock already exists. It needs to be deleted do you want to delete it now?"
+                   if(MessageBox.Show("The selected directory "+folderBrowser.SelectedPath+ @"\SoundsForSoundBlock already exists. It needs to be deleted do you want to delete it now? It will be deleted during the creation"
                             , "Directory already exists"
-                            , MessageBoxButtons.YesNoCancel
+                            , MessageBoxButtons.YesNo
                             , MessageBoxIcon.Question) == DialogResult.Yes)
                     {
                         try
                         {
-                            Directory.Delete(folderBrowser.SelectedPath + @"\SoundsForSoundBlock", true);
+                            if(Directory.Exists(folderBrowser.SelectedPath + @"\SoundsForSoundBlock"))
+                            {
+                                Directory.Delete(folderBrowser.SelectedPath + @"\SoundsForSoundBlock", true);
+                            }
                             tbOutputDirectory.Text = folderBrowser.SelectedPath + @"\SoundsForSoundBlock";
                         } catch(Exception ex)
                         {
@@ -119,6 +122,7 @@ namespace CreationDuGrosSon
                     }
                     else
                     {
+                        tbOutputDirectory.Text = folderBrowser.SelectedPath + @"\SoundsForSoundBlock";
                         return;
                     }
                 }
@@ -168,116 +172,133 @@ namespace CreationDuGrosSon
                                          MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                 if (confirmResult == DialogResult.Yes)
                 {
-                    Directory.Delete(tbOutputDirectory.Text, true);
-                    Directory.CreateDirectory(tbOutputDirectory.Text);
-                    Directory.CreateDirectory(tbOutputDirectory.Text + @"\Audio");
-                    Directory.CreateDirectory(tbOutputDirectory.Text + @"\Data");
-
-                    String outputPath;
-                    foreach(Sound aSound in bs)
+                    try
                     {
-                        //Handle file convertion here
-                        outputPath = tbOutputDirectory.Text + @"\Audio\" + aSound.NameToShow;
-                        if (await convertFile(aSound.FilePath, outputPath, "wav") == 1)
+                        if (Directory.Exists(tbOutputDirectory.Text))
                         {
-                            pbTotal.Value = (bs.IndexOf(aSound)+1)*100 / bs.Count;
+                            Directory.Delete(tbOutputDirectory.Text, true);
+                        }
+                        Directory.CreateDirectory(tbOutputDirectory.Text);
+                        Directory.CreateDirectory(tbOutputDirectory.Text + @"\Audio");
+                        Directory.CreateDirectory(tbOutputDirectory.Text + @"\Data");
+
+                        String outputPath;
+                        foreach (Sound aSound in bs)
+                        {
+                            //Handle file convertion here
+                            outputPath = tbOutputDirectory.Text + @"\Audio\" + aSound.NameToShow;
+                            if (await convertFile(aSound.FilePath, outputPath, "wav"))
+                            {
+                                pbTotal.Value = (bs.IndexOf(aSound) + 1) * 100 / bs.Count;
+                                if(bs.IndexOf(aSound) == bs.Count-1)
+                                {
+                                    pbTotal.Value = 100;
+                                }
+                            }
+
                         }
 
-                    }
-                    
-                    
-                    XmlDocument doc = new XmlDocument();
 
-                    XmlWriterSettings settings = new XmlWriterSettings();
-                    settings.CheckCharacters = true;
-                    settings.Indent = true;
-                    settings.Encoding = Encoding.ASCII;
-                    XmlWriter writer = XmlWriter.Create(tbOutputDirectory.Text + @"\Data\Sounds.sbc", settings);
+                        XmlDocument doc = new XmlDocument();
 
-                    writer.WriteStartDocument();
+                        XmlWriterSettings settings = new XmlWriterSettings();
+                        settings.CheckCharacters = true;
+                        settings.Indent = true;
+                        settings.Encoding = Encoding.ASCII;
+                        XmlWriter writer = XmlWriter.Create(tbOutputDirectory.Text + @"\Data\Sounds.sbc", settings);
 
-                    writer.WriteStartElement("Definitions");
-                    writer.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
-                    writer.WriteAttributeString("xmlns", "xsd", null, "http://www.w3.org/2001/XMLSchema-instance");
-                    writer.WriteStartElement("SoundCategories");
-                    writer.WriteStartElement("SoundCategory");
-                    writer.WriteStartElement("Id");
-                    writer.WriteStartElement("TypeId");
-                    writer.WriteString("SoundCategoryDefinition");
-                    writer.WriteEndElement();
-                    writer.WriteStartElement("SubtypeId");
-                    writer.WriteString("SoundsForSoundBlock");
-                    writer.WriteEndElement();
-                    writer.WriteEndElement();
-                    writer.WriteStartElement("Sounds");
-                    
-                    foreach(Sound aSound in bs)
-                    {
-                        writer.WriteStartElement("SoundDesc");
-                        writer.WriteAttributeString("Id", "SBMod" + (bs.IndexOf(aSound) + 1).ToString());
-                        writer.WriteAttributeString("SoundName", "Mod sounds: " + aSound.NameToShow);
-                        writer.WriteEndElement();
-                    }
-                    
-                    writer.WriteEndElement();
-                    writer.WriteEndElement();
-                    writer.WriteEndElement();
-                    writer.WriteStartElement("Sounds");
-                    
-                    foreach(Sound aSound in bs)
-                    {
-                        writer.WriteStartElement("Sound");
+                        writer.WriteStartDocument();
 
+                        writer.WriteStartElement("Definitions");
+                        writer.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
+                        writer.WriteAttributeString("xmlns", "xsd", null, "http://www.w3.org/2001/XMLSchema-instance");
+                        writer.WriteStartElement("SoundCategories");
+                        writer.WriteStartElement("SoundCategory");
                         writer.WriteStartElement("Id");
                         writer.WriteStartElement("TypeId");
-                        writer.WriteString("AudioDefinition");
+                        writer.WriteString("SoundCategoryDefinition");
                         writer.WriteEndElement();
                         writer.WriteStartElement("SubtypeId");
-                        writer.WriteString("SBMod" + (bs.IndexOf(aSound) + 1).ToString());
+                        writer.WriteString("SoundsForSoundBlock");
                         writer.WriteEndElement();
                         writer.WriteEndElement();
-                        writer.WriteStartElement("Category");
-                        writer.WriteString("Sb");
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("MaxDistance");
-                        writer.WriteString(aSound.MaxDistance.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("Volume");
-                        writer.WriteString(aSound.Volume.ToString());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("Loopable");
-                        writer.WriteString(aSound.Loopable.ToString().ToLower());
-                        writer.WriteEndElement();
-                        writer.WriteStartElement("Waves");
-                        writer.WriteStartElement("Wave");
-                        writer.WriteAttributeString("Type","D3");
-                        writer.WriteStartElement("Start");
-                        writer.WriteString(@"Audio\" + aSound.NameToShow + ".xwm");
-                        writer.WriteEndElement();
-                        writer.WriteEndElement();
-                        writer.WriteEndElement();
+                        writer.WriteStartElement("Sounds");
+
+                        foreach (Sound aSound in bs)
+                        {
+                            writer.WriteStartElement("SoundDesc");
+                            writer.WriteAttributeString("Id", "SBMod" + (bs.IndexOf(aSound) + 1).ToString());
+                            writer.WriteAttributeString("SoundName", "Mod sounds: " + aSound.NameToShow);
+                            writer.WriteEndElement();
+                        }
 
                         writer.WriteEndElement();
-                    }
-                    
-                    writer.WriteEndElement();
-                    writer.WriteEndElement();
-                    writer.WriteEndDocument();
+                        writer.WriteEndElement();
+                        writer.WriteEndElement();
+                        writer.WriteStartElement("Sounds");
 
-                    writer.Flush();
-                    doc.WriteTo(writer);
-                    doc.Save(writer);
-                    writer.Close();
+                        foreach (Sound aSound in bs)
+                        {
+                            writer.WriteStartElement("Sound");
 
-                    if(MessageBox.Show("The mod has been created! Do you want to open the directory ?", "Mod created", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                            writer.WriteStartElement("Id");
+                            writer.WriteStartElement("TypeId");
+                            writer.WriteString("AudioDefinition");
+                            writer.WriteEndElement();
+                            writer.WriteStartElement("SubtypeId");
+                            writer.WriteString("SBMod" + (bs.IndexOf(aSound) + 1).ToString());
+                            writer.WriteEndElement();
+                            writer.WriteEndElement();
+                            writer.WriteStartElement("Category");
+                            writer.WriteString("Sb");
+                            writer.WriteEndElement();
+                            writer.WriteStartElement("MaxDistance");
+                            writer.WriteString(aSound.MaxDistance.ToString());
+                            writer.WriteEndElement();
+                            writer.WriteStartElement("Volume");
+                            writer.WriteString(aSound.Volume.ToString());
+                            writer.WriteEndElement();
+                            writer.WriteStartElement("Loopable");
+                            writer.WriteString(aSound.Loopable.ToString().ToLower());
+                            writer.WriteEndElement();
+                            writer.WriteStartElement("Waves");
+                            writer.WriteStartElement("Wave");
+                            writer.WriteAttributeString("Type", "D3");
+                            writer.WriteStartElement("Start");
+                            writer.WriteString(@"Audio\" + aSound.NameToShow + ".xwm");
+                            writer.WriteEndElement();
+                            writer.WriteEndElement();
+                            writer.WriteEndElement();
+
+                            writer.WriteEndElement();
+                        }
+
+                        writer.WriteEndElement();
+                        writer.WriteEndElement();
+                        writer.WriteEndDocument();
+
+                        writer.Flush();
+                        doc.WriteTo(writer);
+                        doc.Save(writer);
+                        writer.Close();
+
+                        //Deletes temporary file created by NReco to convert audio
+                        if(File.Exists(Application.StartupPath + @"\ffmpeg.exe"))
+                        {
+                            File.Delete(Application.StartupPath + @"\ffmpeg.exe");
+                        }
+
+                        if (MessageBox.Show("The mod has been created! Do you want to open the directory ?", "Mod created", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        {
+                            Process.Start("explorer.exe", tbOutputDirectory.Text);
+                        }
+                        pbConvert.Value = 0;
+                        pbTotal.Value = 0;
+
+                    } catch(Exception ex)
                     {
-                        Process.Start("explorer.exe", tbOutputDirectory.Text);
+                        MessageBox.Show("An error occured, it shouldn't happen. Send this to the dev he'll look into it! \n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    pbConvert.Value = 0;
-                    pbTotal.Value = 0;
-
-                    //Deletes temporary file created by NReco to convert audio
-                    File.Delete(Application.StartupPath + @"\ffmpeg.exe");
                 }
             }
         }
@@ -288,7 +309,7 @@ namespace CreationDuGrosSon
          * parameters:
          * 
          * ***/
-        private async Task<int> convertFile(String pathOfFile, String pathOutput, String format)
+        private async Task<bool> convertFile(String pathOfFile, String pathOutput, String format)
         {
             try
             {
@@ -302,18 +323,15 @@ namespace CreationDuGrosSon
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
                 process.StartInfo.Arguments = "\""+pathOutput + "." + format + "\" \"" + pathOutput + ".xwm\"";
-
                 await Task.Factory.StartNew(() => ffmpeg.ConvertMedia(pathOfFile, null, pathOutput + "." + format, format, new ConvertSettings() { CustomOutputArgs = "-vn" }));
-                process.Start();
-                //await Task.Factory.StartNew(() => process.Start());
+                await Task.Factory.StartNew(() => process.Start());
                 process.WaitForExit();
                 File.Delete(pathOutput + "." + format);
-
-                return 1;
+                return true;
             } catch (Exception ex)
             {
                 MessageBox.Show("There was an error during the convertion of the files. Make sure that the app has the right to modify files.\n\n Error message: " +ex.Message,"Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
-                return 0;
+                return false;
             }
         }
 
