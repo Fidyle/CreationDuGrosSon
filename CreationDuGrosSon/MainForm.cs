@@ -43,6 +43,8 @@ namespace CreationDuGrosSon
             soundPlayer = new SoundPlayer(stream);
             soundPlayer.PlayLooping();
             playState = true;
+
+            
         }
 
         /***
@@ -166,70 +168,102 @@ namespace CreationDuGrosSon
                                          MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                 if (confirmResult == DialogResult.Yes)
                 {
+                    Directory.Delete(tbOutputDirectory.Text, true);
                     Directory.CreateDirectory(tbOutputDirectory.Text);
                     Directory.CreateDirectory(tbOutputDirectory.Text + @"\Audio");
                     Directory.CreateDirectory(tbOutputDirectory.Text + @"\Data");
 
                     String outputPath;
-                    String soundDescXml = "";
-                    String sounds  = "";
                     foreach(Sound aSound in bs)
                     {
                         //Handle file convertion here
-                        outputPath = tbOutputDirectory.Text + @"\Audio\" + aSound.NameToShow + ".wmv";
-                        if (await convertFile(aSound.FilePath, outputPath, Format.wmv) == 1)
+                        outputPath = tbOutputDirectory.Text + @"\Audio\" + aSound.NameToShow;
+                        if (await convertFile(aSound.FilePath, outputPath, "wav") == 1)
                         {
                             pbTotal.Value = (bs.IndexOf(aSound)+1)*100 / bs.Count;
                         }
 
-                        //Handle creation of xml part needing the loop here
-                        soundDescXml += "<SoundDesc Id=\"SBMOD"+bs.IndexOf(aSound)+"\" SoundName=\"Mod sounds: "+aSound.NameToShow+"\"/>";
-                        sounds+= 
-                                "<Sound>" +
-                                    "<Id>" +
-                                        "<TypeId>AudioDefinition</TypeId >" +
-                                        "<SubtypeId>SBMOD" + bs.IndexOf(aSound) + "</SubtypeId>" +
-                                    "</Id>" +
-                                    "<Category>Sb</Category>" +
-                                    "<MaxDistance>"+aSound.MaxDistance+"</MaxDistance>" +
-                                    "<Volume>"+aSound.Volume+"</Volume>" +
-                                    "<Loopable>"+aSound.Loopable.ToString()+"</Loopable>" +
-                                    "<Waves>" +
-                                        "<Wave Type = \"D3\">" +
-                                            "<Start>Audio\\"+aSound.NameToShow+".xwm</Start>" +
-                                        "</Wave>" +
-                                    "</Waves>" +
-                                "</Sound>";
                     }
-                    //Encoding in utf8 
-
+                    
+                    
                     XmlDocument doc = new XmlDocument();
 
                     XmlWriterSettings settings = new XmlWriterSettings();
                     settings.CheckCharacters = true;
-                    settings.Encoding = Encoding.UTF8;
                     settings.Indent = true;
+                    settings.Encoding = Encoding.ASCII;
                     XmlWriter writer = XmlWriter.Create(tbOutputDirectory.Text + @"\Data\Sounds.sbc", settings);
 
                     writer.WriteStartDocument();
-                    writer.WriteStartElement("Definitions");
-                        writer.WriteStartElement("SoundCategories");
-                            writer.WriteStartElement("SoundCategory");
-                                writer.WriteStartElement("id");
-                                    writer.WriteElementString("TypeId", "SoundCategoryDefinition");
-                                    writer.WriteElementString("SubtypeId", "SoundsForSoundBlock");
-                                writer.WriteEndElement();
-                                writer.WriteStartElement("Sounds");
-                                    writer.WriteRaw(soundDescXml);
-                                writer.WriteEndElement();
-                            writer.WriteEndElement();
-                        writer.WriteEndElement();
-                    writer.WriteStartElement("Sounds");
-                        writer.WriteRaw(sounds);
-                    writer.WriteEndElement();
 
+                    writer.WriteStartElement("Definitions");
+                    writer.WriteAttributeString("xmlns", "xsi", null, "http://www.w3.org/2001/XMLSchema-instance");
+                    writer.WriteAttributeString("xmlns", "xsd", null, "http://www.w3.org/2001/XMLSchema-instance");
+                    writer.WriteStartElement("SoundCategories");
+                    writer.WriteStartElement("SoundCategory");
+                    writer.WriteStartElement("Id");
+                    writer.WriteStartElement("TypeId");
+                    writer.WriteString("SoundCategoryDefinition");
+                    writer.WriteEndElement();
+                    writer.WriteStartElement("SubtypeId");
+                    writer.WriteString("SoundsForSoundBlock");
+                    writer.WriteEndElement();
+                    writer.WriteEndElement();
+                    writer.WriteStartElement("Sounds");
+                    
+                    foreach(Sound aSound in bs)
+                    {
+                        writer.WriteStartElement("SoundDesc");
+                        writer.WriteAttributeString("Id", "SBMod" + (bs.IndexOf(aSound) + 1).ToString());
+                        writer.WriteAttributeString("SoundName", "Mod sounds: " + aSound.NameToShow);
+                        writer.WriteEndElement();
+                    }
+                    
+                    writer.WriteEndElement();
+                    writer.WriteEndElement();
+                    writer.WriteEndElement();
+                    writer.WriteStartElement("Sounds");
+                    
+                    foreach(Sound aSound in bs)
+                    {
+                        writer.WriteStartElement("Sound");
+
+                        writer.WriteStartElement("Id");
+                        writer.WriteStartElement("TypeId");
+                        writer.WriteString("AudioDefinition");
+                        writer.WriteEndElement();
+                        writer.WriteStartElement("SubtypeId");
+                        writer.WriteString("SBMod" + (bs.IndexOf(aSound) + 1).ToString());
+                        writer.WriteEndElement();
+                        writer.WriteEndElement();
+                        writer.WriteStartElement("Category");
+                        writer.WriteString("Sb");
+                        writer.WriteEndElement();
+                        writer.WriteStartElement("MaxDistance");
+                        writer.WriteString(aSound.MaxDistance.ToString());
+                        writer.WriteEndElement();
+                        writer.WriteStartElement("Volume");
+                        writer.WriteString(aSound.Volume.ToString());
+                        writer.WriteEndElement();
+                        writer.WriteStartElement("Loopable");
+                        writer.WriteString(aSound.Loopable.ToString().ToLower());
+                        writer.WriteEndElement();
+                        writer.WriteStartElement("Waves");
+                        writer.WriteStartElement("Wave");
+                        writer.WriteAttributeString("Type","D3");
+                        writer.WriteStartElement("Start");
+                        writer.WriteString(@"Audio\" + aSound.NameToShow + ".xwm");
+                        writer.WriteEndElement();
+                        writer.WriteEndElement();
+                        writer.WriteEndElement();
+
+                        writer.WriteEndElement();
+                    }
+                    
+                    writer.WriteEndElement();
                     writer.WriteEndElement();
                     writer.WriteEndDocument();
+
                     writer.Flush();
                     doc.WriteTo(writer);
                     doc.Save(writer);
@@ -261,7 +295,20 @@ namespace CreationDuGrosSon
                 FFMpegConverter ffmpeg = new FFMpegConverter();
                 ffmpeg.ConvertProgress += updateProgress;
                 //Creates a task for void func
-                await Task.Factory.StartNew(() => ffmpeg.ConvertMedia(pathOfFile, null, pathOutput, format, new ConvertSettings() { CustomOutputArgs = "-vn"}));
+
+                Process process = new Process();
+                process.StartInfo.FileName = "xWMAEncode.exe";
+                process.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.CreateNoWindow = true;
+                process.StartInfo.Arguments = "\""+pathOutput + "." + format + "\" \"" + pathOutput + ".xwm\"";
+
+                await Task.Factory.StartNew(() => ffmpeg.ConvertMedia(pathOfFile, null, pathOutput + "." + format, format, new ConvertSettings() { CustomOutputArgs = "-vn" }));
+                process.Start();
+                //await Task.Factory.StartNew(() => process.Start());
+                process.WaitForExit();
+                File.Delete(pathOutput + "." + format);
+
                 return 1;
             } catch (Exception ex)
             {
