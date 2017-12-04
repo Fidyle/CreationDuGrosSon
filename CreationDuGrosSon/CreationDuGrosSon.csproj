@@ -125,6 +125,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="48px_sound_block_icon_V1R_icon.ico" />
+    <EmbeddedResource Include="xWMAEncode.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
