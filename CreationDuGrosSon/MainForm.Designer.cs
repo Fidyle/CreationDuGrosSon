@@ -34,6 +34,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvFiles = new System.Windows.Forms.DataGridView();
             this.btnAddFiles = new System.Windows.Forms.Button();
             this.tbxInfo = new System.Windows.Forms.TextBox();
@@ -46,6 +47,8 @@
             this.btnRemoveFIles = new System.Windows.Forms.Button();
             this.tbOutputDirectory = new System.Windows.Forms.TextBox();
             this.lblTable = new System.Windows.Forms.Label();
+            this.tbDirectory = new System.Windows.Forms.TextBox();
+            this.lblAntislash = new System.Windows.Forms.Label();
             this.soundBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -53,6 +56,7 @@
             this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewCheckBoxColumn2 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.bitRateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).BeginInit();
             this.gbButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundBindingSource)).BeginInit();
@@ -74,7 +78,8 @@
             this.dataGridViewTextBoxColumn8,
             this.dataGridViewTextBoxColumn9,
             this.dataGridViewTextBoxColumn10,
-            this.dataGridViewCheckBoxColumn2});
+            this.dataGridViewCheckBoxColumn2,
+            this.bitRateDataGridViewTextBoxColumn});
             this.dgvFiles.DataSource = this.soundBindingSource;
             this.dgvFiles.Location = new System.Drawing.Point(12, 12);
             this.dgvFiles.Name = "dgvFiles";
@@ -88,7 +93,7 @@
             // btnAddFiles
             // 
             this.btnAddFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAddFiles.Location = new System.Drawing.Point(6, 19);
+            this.btnAddFiles.Location = new System.Drawing.Point(6, 18);
             this.btnAddFiles.Name = "btnAddFiles";
             this.btnAddFiles.Size = new System.Drawing.Size(150, 23);
             this.btnAddFiles.TabIndex = 2;
@@ -113,7 +118,7 @@
             // btnCreateMod
             // 
             this.btnCreateMod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnCreateMod.Location = new System.Drawing.Point(6, 77);
+            this.btnCreateMod.Location = new System.Drawing.Point(6, 76);
             this.btnCreateMod.Name = "btnCreateMod";
             this.btnCreateMod.Size = new System.Drawing.Size(150, 23);
             this.btnCreateMod.TabIndex = 4;
@@ -124,7 +129,7 @@
             // btnChooseDirectory
             // 
             this.btnChooseDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnChooseDirectory.Location = new System.Drawing.Point(6, 48);
+            this.btnChooseDirectory.Location = new System.Drawing.Point(6, 47);
             this.btnChooseDirectory.Name = "btnChooseDirectory";
             this.btnChooseDirectory.Size = new System.Drawing.Size(150, 23);
             this.btnChooseDirectory.TabIndex = 5;
@@ -136,6 +141,8 @@
             // 
             this.gbButtons.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbButtons.Controls.Add(this.lblAntislash);
+            this.gbButtons.Controls.Add(this.tbDirectory);
             this.gbButtons.Controls.Add(this.btnMusic);
             this.gbButtons.Controls.Add(this.pbTotal);
             this.gbButtons.Controls.Add(this.pbConvert);
@@ -144,9 +151,9 @@
             this.gbButtons.Controls.Add(this.btnAddFiles);
             this.gbButtons.Controls.Add(this.btnCreateMod);
             this.gbButtons.Controls.Add(this.btnChooseDirectory);
-            this.gbButtons.Location = new System.Drawing.Point(12, 248);
+            this.gbButtons.Location = new System.Drawing.Point(12, 249);
             this.gbButtons.Name = "gbButtons";
-            this.gbButtons.Size = new System.Drawing.Size(560, 108);
+            this.gbButtons.Size = new System.Drawing.Size(560, 107);
             this.gbButtons.TabIndex = 6;
             this.gbButtons.TabStop = false;
             // 
@@ -154,7 +161,7 @@
             // 
             this.btnMusic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnMusic.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.btnMusic.Location = new System.Drawing.Point(404, 19);
+            this.btnMusic.Location = new System.Drawing.Point(404, 18);
             this.btnMusic.Name = "btnMusic";
             this.btnMusic.Size = new System.Drawing.Size(150, 23);
             this.btnMusic.TabIndex = 11;
@@ -184,7 +191,7 @@
             // btnRemoveFIles
             // 
             this.btnRemoveFIles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRemoveFIles.Location = new System.Drawing.Point(162, 19);
+            this.btnRemoveFIles.Location = new System.Drawing.Point(162, 18);
             this.btnRemoveFIles.Name = "btnRemoveFIles";
             this.btnRemoveFIles.Size = new System.Drawing.Size(150, 23);
             this.btnRemoveFIles.TabIndex = 7;
@@ -199,7 +206,7 @@
             this.tbOutputDirectory.Enabled = false;
             this.tbOutputDirectory.Location = new System.Drawing.Point(162, 48);
             this.tbOutputDirectory.Name = "tbOutputDirectory";
-            this.tbOutputDirectory.Size = new System.Drawing.Size(392, 20);
+            this.tbOutputDirectory.Size = new System.Drawing.Size(240, 20);
             this.tbOutputDirectory.TabIndex = 6;
             // 
             // lblTable
@@ -211,6 +218,27 @@
             this.lblTable.Size = new System.Drawing.Size(182, 13);
             this.lblTable.TabIndex = 7;
             this.lblTable.Text = "Click on gray areas to modify element";
+            // 
+            // tbDirectory
+            // 
+            this.tbDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbDirectory.Location = new System.Drawing.Point(420, 48);
+            this.tbDirectory.Name = "tbDirectory";
+            this.tbDirectory.Size = new System.Drawing.Size(134, 20);
+            this.tbDirectory.TabIndex = 12;
+            this.tbDirectory.Text = "SoundsForSoundBlock";
+            // 
+            // lblAntislash
+            // 
+            this.lblAntislash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAntislash.AutoSize = true;
+            this.lblAntislash.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAntislash.Location = new System.Drawing.Point(405, 49);
+            this.lblAntislash.Margin = new System.Windows.Forms.Padding(0);
+            this.lblAntislash.Name = "lblAntislash";
+            this.lblAntislash.Size = new System.Drawing.Size(12, 16);
+            this.lblAntislash.TabIndex = 13;
+            this.lblAntislash.Text = "\\";
             // 
             // soundBindingSource
             // 
@@ -234,32 +262,52 @@
             // dataGridViewTextBoxColumn8
             // 
             this.dataGridViewTextBoxColumn8.DataPropertyName = "Type";
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Silver;
-            this.dataGridViewTextBoxColumn8.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridViewTextBoxColumn8.HeaderText = "Type";
             this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
             // 
             // dataGridViewTextBoxColumn9
             // 
             this.dataGridViewTextBoxColumn9.DataPropertyName = "MaxDistance";
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Silver;
-            this.dataGridViewTextBoxColumn9.DefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridViewTextBoxColumn9.HeaderText = "Max distance";
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Silver;
+            this.dataGridViewTextBoxColumn9.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dataGridViewTextBoxColumn9.HeaderText = "MaxDistance";
             this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
             // 
             // dataGridViewTextBoxColumn10
             // 
             this.dataGridViewTextBoxColumn10.DataPropertyName = "Volume";
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.Silver;
-            this.dataGridViewTextBoxColumn10.DefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Silver;
+            this.dataGridViewTextBoxColumn10.DefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridViewTextBoxColumn10.HeaderText = "Volume";
             this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
             // 
             // dataGridViewCheckBoxColumn2
             // 
             this.dataGridViewCheckBoxColumn2.DataPropertyName = "Loopable";
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.Silver;
+            dataGridViewCellStyle4.NullValue = false;
+            this.dataGridViewCheckBoxColumn2.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridViewCheckBoxColumn2.HeaderText = "Loopable";
             this.dataGridViewCheckBoxColumn2.Name = "dataGridViewCheckBoxColumn2";
+            // 
+            // bitRateDataGridViewTextBoxColumn
+            // 
+            this.bitRateDataGridViewTextBoxColumn.DataPropertyName = "BitRate";
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.Silver;
+            this.bitRateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
+            this.bitRateDataGridViewTextBoxColumn.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.bitRateDataGridViewTextBoxColumn.HeaderText = "Bit rate";
+            this.bitRateDataGridViewTextBoxColumn.Items.AddRange(new object[] {
+            "32000",
+            "48000",
+            "64000",
+            "96000",
+            "160000",
+            "192000"});
+            this.bitRateDataGridViewTextBoxColumn.Name = "bitRateDataGridViewTextBoxColumn";
+            this.bitRateDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.bitRateDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // MainForm
             // 
@@ -307,6 +355,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
+        private System.Windows.Forms.TextBox tbDirectory;
+        private System.Windows.Forms.Label lblAntislash;
         private System.Windows.Forms.BindingSource soundBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
@@ -314,6 +364,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn2;
+        private System.Windows.Forms.DataGridViewComboBoxColumn bitRateDataGridViewTextBoxColumn;
     }
 }
 

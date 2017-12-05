@@ -24,11 +24,12 @@ namespace CreationDuGrosSon
         private BindingSource bs;
         private SoundPlayer soundPlayer;
         private bool playState;
+        private String lastSelectedFolder = "";
         public MainForm()
         {
             InitializeComponent();
 
-            //
+
             bs = (BindingSource)dgvFiles.DataSource;
             bs = soundBindingSource;
             
@@ -58,7 +59,7 @@ namespace CreationDuGrosSon
             {
                 OpenFileDialog fileChooser = new OpenFileDialog
                 {
-                    InitialDirectory = "c:\\",
+                    //InitialDirectory = "c:\\",
                     /* set of supported audio and video files
                         * Obviously only the audio part will be used
                     */
@@ -97,6 +98,7 @@ namespace CreationDuGrosSon
                                 }
                             }
                         }
+                        dgvFiles.ClearSelection();
                     } catch (Exception ex)
                     {
                         MessageBox.Show("Error: Couldn't read the file(s). Error message: " + ex.Message);
@@ -115,9 +117,15 @@ namespace CreationDuGrosSon
             if (dgvFiles.CanSelect)
             {
                 FolderBrowserDialog folderBrowser = new FolderBrowserDialog();
+                if(lastSelectedFolder != "")
+                {
+                    folderBrowser.SelectedPath = lastSelectedFolder;
+                }
+                
+                
                 if (folderBrowser.ShowDialog() == DialogResult.OK)
                 {
-                    if (Directory.Exists(folderBrowser.SelectedPath + @"\SoundsForSoundBlock"))
+                    /*if (Directory.Exists(folderBrowser.SelectedPath + @"\SoundsForSoundBlock"))
                     {
                         if (MessageBox.Show("The selected directory " + folderBrowser.SelectedPath + @"\SoundsForSoundBlock already exists. It needs to be deleted do you want to delete it now? It will be deleted during the creation"
                                  , "Directory already exists"
@@ -131,6 +139,7 @@ namespace CreationDuGrosSon
                                     Directory.Delete(folderBrowser.SelectedPath + @"\SoundsForSoundBlock", true);
                                 }
                                 tbOutputDirectory.Text = folderBrowser.SelectedPath + @"\SoundsForSoundBlock";
+                                lastSelectedFolder = folderBrowser.SelectedPath;
                             }
                             catch (Exception ex)
                             {
@@ -139,6 +148,7 @@ namespace CreationDuGrosSon
                         }
                         else
                         {
+                            lastSelectedFolder = folderBrowser.SelectedPath;
                             tbOutputDirectory.Text = folderBrowser.SelectedPath + @"\SoundsForSoundBlock";
                             return;
                         }
@@ -146,7 +156,8 @@ namespace CreationDuGrosSon
                     else
                     {
                         tbOutputDirectory.Text = folderBrowser.SelectedPath + @"\SoundsForSoundBlock";
-                    }
+                    }*/
+                    tbOutputDirectory.Text = folderBrowser.SelectedPath;
 
                 }
             }
@@ -179,7 +190,7 @@ namespace CreationDuGrosSon
                 pbConvert.Value = 0;
                 pbTotal.Value = 0;
                 //check if output direcotry is chosen and if there's files in teh table
-                if (dgvFiles.Rows.Count == 0 || tbOutputDirectory.Text == "")
+                if (dgvFiles.Rows.Count == 0 || tbOutputDirectory.Text == "" || tbDirectory.Text == "")
                 {
                     MessageBox.Show("You need to choose at least one file and an output directory for the created mod", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -197,23 +208,35 @@ namespace CreationDuGrosSon
                     if (confirmResult == DialogResult.Yes)
                     {
                         dgvFiles.Enabled = false;
-                        
                         dgvFiles.ClearSelection();
+                        String outputDirecory = tbOutputDirectory.Text + @"\" + tbDirectory.Text;
+
                         try
                         {
-                            if (Directory.Exists(tbOutputDirectory.Text))
+                            if (Directory.Exists(outputDirecory))
                             {
-                                Directory.Delete(tbOutputDirectory.Text, true);
+                                if( MessageBox.Show(@"The directory """  +outputDirecory + @""" already exists, it needs to be deleted to avoid errors do yo uwant to do it now ?",
+                                    "Warning",
+                                    MessageBoxButtons.YesNo,
+                                    MessageBoxIcon.Warning) == DialogResult.Yes)
+                                {
+                                    Directory.Delete(outputDirecory, true);
+                                }
+                                else
+                                {
+                                    dgvFiles.Enabled = true;
+                                    return;
+                                }
                             }
-                            Directory.CreateDirectory(tbOutputDirectory.Text);
-                            Directory.CreateDirectory(tbOutputDirectory.Text + @"\Audio");
-                            Directory.CreateDirectory(tbOutputDirectory.Text + @"\Data");
+                            Directory.CreateDirectory(outputDirecory);
+                            Directory.CreateDirectory(outputDirecory + @"\Audio");
+                            Directory.CreateDirectory(outputDirecory + @"\Data");
 
                             String outputPath;
                             foreach (Sound aSound in bs)
                             {
                                 //Handle file convertion here
-                                outputPath = tbOutputDirectory.Text + @"\Audio\" + aSound.NameToShow;
+                                outputPath = outputDirecory + @"\Audio\" + aSound.NameToShow;
                                 await convertFile(aSound.FilePath, outputPath, "wav", bs.IndexOf(aSound));
                             }
 
@@ -229,7 +252,7 @@ namespace CreationDuGrosSon
                             settings.CheckCharacters = true;
                             settings.Indent = true;
                             settings.Encoding = Encoding.ASCII;
-                            XmlWriter writer = XmlWriter.Create(tbOutputDirectory.Text + @"\Data\Sounds.sbc", settings);
+                            XmlWriter writer = XmlWriter.Create(outputDirecory + @"\Data\Sounds.sbc", settings);
 
                             writer.WriteStartDocument();
 
@@ -345,7 +368,8 @@ namespace CreationDuGrosSon
                 process.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
-                process.StartInfo.Arguments = "\"" + pathOutput + "." + format + "\" \"" + pathOutput + ".xwm\"";
+                string bitRate = ((Sound)bs[indexInBs]).BitRate;
+                process.StartInfo.Arguments = @"-b " + bitRate + @" """ + pathOutput + "." + format + @""" """ + pathOutput + @".xwm""";
 
                 Task continuation = task.ContinueWith(
                     async antecedant => {
@@ -379,7 +403,7 @@ namespace CreationDuGrosSon
                         {
                             if (MessageBox.Show("The mod has been created! Do you want to open the directory ?", "Mod created", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                             {
-                                Process.Start("explorer.exe", tbOutputDirectory.Text);
+                                Process.Start("explorer.exe", tbOutputDirectory.Text + @"\" + tbDirectory.Text);
                             }
                             
                             pbConvert.Invoke(new Action(() => { pbConvert.Value = pbConvert.Minimum; }));
@@ -419,6 +443,10 @@ namespace CreationDuGrosSon
                 soundPlayer.PlayLooping();
             }
             playState = !playState;
+            foreach(Sound s in bs)
+            {
+                Console.WriteLine(s.BitRate);
+            }
         }
 
         private void dgvFiles_CellEndEdit(object sender, DataGridViewCellEventArgs e)

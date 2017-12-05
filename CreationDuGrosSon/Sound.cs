@@ -11,6 +11,7 @@ namespace CreationDuGrosSon
         private int maxDistance;
         private Double volume;
         private bool loopable;
+        private String bitRate;
         public Sound(String nPath)
         {
             this.filePath = nPath;
@@ -19,6 +20,8 @@ namespace CreationDuGrosSon
             this.maxDistance = 100;
             this.volume = 1.00;
             this.loopable = true;
+            this.bitRate = "48000";
+            
         }
 
         public string FilePath { get => filePath; set => filePath = value; }
@@ -27,6 +30,7 @@ namespace CreationDuGrosSon
         public int MaxDistance { get => maxDistance; set => maxDistance = value; }
         public double Volume { get => volume; set => volume = value; }
         public bool Loopable { get => loopable; set => loopable = value; }
+        public string BitRate { get => bitRate; set => bitRate = value; }
 
         public string getOriginalName()
         {
