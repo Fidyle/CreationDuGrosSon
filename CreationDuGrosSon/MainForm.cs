@@ -28,9 +28,7 @@ namespace CreationDuGrosSon
         public MainForm()
         {
             InitializeComponent();
-
-
-            bs = (BindingSource)dgvFiles.DataSource;
+            //bs = new BindingSource();
             bs = soundBindingSource;
             
             //just a tooltip
@@ -310,7 +308,7 @@ namespace CreationDuGrosSon
                                 writer.WriteEndElement();
                                 writer.WriteStartElement("Waves");
                                 writer.WriteStartElement("Wave");
-                                writer.WriteAttributeString("Type", "D3");
+                                writer.WriteAttributeString("Type", aSound.WaveType);
                                 writer.WriteStartElement("Start");
                                 writer.WriteString(@"Audio\" + aSound.NameToShow + ".xwm");
                                 writer.WriteEndElement();

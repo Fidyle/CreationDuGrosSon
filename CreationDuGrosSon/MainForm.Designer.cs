@@ -35,28 +35,30 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvFiles = new System.Windows.Forms.DataGridView();
             this.btnAddFiles = new System.Windows.Forms.Button();
             this.tbxInfo = new System.Windows.Forms.TextBox();
             this.btnCreateMod = new System.Windows.Forms.Button();
             this.btnChooseDirectory = new System.Windows.Forms.Button();
             this.gbButtons = new System.Windows.Forms.GroupBox();
+            this.lblAntislash = new System.Windows.Forms.Label();
+            this.tbDirectory = new System.Windows.Forms.TextBox();
             this.btnMusic = new System.Windows.Forms.Button();
             this.pbTotal = new System.Windows.Forms.ProgressBar();
             this.pbConvert = new System.Windows.Forms.ProgressBar();
             this.btnRemoveFIles = new System.Windows.Forms.Button();
             this.tbOutputDirectory = new System.Windows.Forms.TextBox();
             this.lblTable = new System.Windows.Forms.Label();
-            this.tbDirectory = new System.Windows.Forms.TextBox();
-            this.lblAntislash = new System.Windows.Forms.Label();
             this.soundBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn9 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn10 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewCheckBoxColumn2 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.filePathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nameToShowDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.maxDistanceDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.volumeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.loopableDataGridViewCheckBoxColumn = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.bitRateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.waveTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).BeginInit();
             this.gbButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundBindingSource)).BeginInit();
@@ -73,19 +75,20 @@
             this.dgvFiles.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvFiles.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             this.dgvFiles.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn6,
-            this.dataGridViewTextBoxColumn7,
-            this.dataGridViewTextBoxColumn8,
-            this.dataGridViewTextBoxColumn9,
-            this.dataGridViewTextBoxColumn10,
-            this.dataGridViewCheckBoxColumn2,
-            this.bitRateDataGridViewTextBoxColumn});
+            this.filePathDataGridViewTextBoxColumn,
+            this.typeDataGridViewTextBoxColumn,
+            this.nameToShowDataGridViewTextBoxColumn,
+            this.maxDistanceDataGridViewTextBoxColumn,
+            this.volumeDataGridViewTextBoxColumn,
+            this.loopableDataGridViewCheckBoxColumn,
+            this.bitRateDataGridViewTextBoxColumn,
+            this.waveTypeDataGridViewTextBoxColumn});
             this.dgvFiles.DataSource = this.soundBindingSource;
             this.dgvFiles.Location = new System.Drawing.Point(12, 12);
             this.dgvFiles.Name = "dgvFiles";
             this.dgvFiles.RowHeadersVisible = false;
             this.dgvFiles.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvFiles.Size = new System.Drawing.Size(560, 218);
+            this.dgvFiles.Size = new System.Drawing.Size(660, 218);
             this.dgvFiles.TabIndex = 1;
             this.dgvFiles.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvFiles_CellEndEdit);
             this.dgvFiles.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgvFiles_DataError);
@@ -111,7 +114,7 @@
             this.tbxInfo.Name = "tbxInfo";
             this.tbxInfo.ReadOnly = true;
             this.tbxInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbxInfo.Size = new System.Drawing.Size(560, 87);
+            this.tbxInfo.Size = new System.Drawing.Size(660, 87);
             this.tbxInfo.TabIndex = 3;
             this.tbxInfo.Text = resources.GetString("tbxInfo.Text");
             // 
@@ -153,15 +156,36 @@
             this.gbButtons.Controls.Add(this.btnChooseDirectory);
             this.gbButtons.Location = new System.Drawing.Point(12, 249);
             this.gbButtons.Name = "gbButtons";
-            this.gbButtons.Size = new System.Drawing.Size(560, 107);
+            this.gbButtons.Size = new System.Drawing.Size(660, 107);
             this.gbButtons.TabIndex = 6;
             this.gbButtons.TabStop = false;
+            // 
+            // lblAntislash
+            // 
+            this.lblAntislash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAntislash.AutoSize = true;
+            this.lblAntislash.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAntislash.Location = new System.Drawing.Point(505, 49);
+            this.lblAntislash.Margin = new System.Windows.Forms.Padding(0);
+            this.lblAntislash.Name = "lblAntislash";
+            this.lblAntislash.Size = new System.Drawing.Size(12, 16);
+            this.lblAntislash.TabIndex = 13;
+            this.lblAntislash.Text = "\\";
+            // 
+            // tbDirectory
+            // 
+            this.tbDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbDirectory.Location = new System.Drawing.Point(520, 48);
+            this.tbDirectory.Name = "tbDirectory";
+            this.tbDirectory.Size = new System.Drawing.Size(134, 20);
+            this.tbDirectory.TabIndex = 12;
+            this.tbDirectory.Text = "SoundsForSoundBlock";
             // 
             // btnMusic
             // 
             this.btnMusic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnMusic.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.btnMusic.Location = new System.Drawing.Point(404, 18);
+            this.btnMusic.Location = new System.Drawing.Point(504, 18);
             this.btnMusic.Name = "btnMusic";
             this.btnMusic.Size = new System.Drawing.Size(150, 23);
             this.btnMusic.TabIndex = 11;
@@ -176,7 +200,7 @@
             this.pbTotal.Location = new System.Drawing.Point(162, 77);
             this.pbTotal.Maximum = 1000000;
             this.pbTotal.Name = "pbTotal";
-            this.pbTotal.Size = new System.Drawing.Size(392, 10);
+            this.pbTotal.Size = new System.Drawing.Size(492, 10);
             this.pbTotal.TabIndex = 10;
             // 
             // pbConvert
@@ -185,7 +209,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.pbConvert.Location = new System.Drawing.Point(162, 92);
             this.pbConvert.Name = "pbConvert";
-            this.pbConvert.Size = new System.Drawing.Size(392, 10);
+            this.pbConvert.Size = new System.Drawing.Size(492, 10);
             this.pbConvert.TabIndex = 9;
             // 
             // btnRemoveFIles
@@ -206,7 +230,7 @@
             this.tbOutputDirectory.Enabled = false;
             this.tbOutputDirectory.Location = new System.Drawing.Point(162, 48);
             this.tbOutputDirectory.Name = "tbOutputDirectory";
-            this.tbOutputDirectory.Size = new System.Drawing.Size(240, 20);
+            this.tbOutputDirectory.Size = new System.Drawing.Size(340, 20);
             this.tbOutputDirectory.TabIndex = 6;
             // 
             // lblTable
@@ -219,84 +243,71 @@
             this.lblTable.TabIndex = 7;
             this.lblTable.Text = "Click on gray areas to modify element";
             // 
-            // tbDirectory
-            // 
-            this.tbDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbDirectory.Location = new System.Drawing.Point(420, 48);
-            this.tbDirectory.Name = "tbDirectory";
-            this.tbDirectory.Size = new System.Drawing.Size(134, 20);
-            this.tbDirectory.TabIndex = 12;
-            this.tbDirectory.Text = "SoundsForSoundBlock";
-            // 
-            // lblAntislash
-            // 
-            this.lblAntislash.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblAntislash.AutoSize = true;
-            this.lblAntislash.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAntislash.Location = new System.Drawing.Point(405, 49);
-            this.lblAntislash.Margin = new System.Windows.Forms.Padding(0);
-            this.lblAntislash.Name = "lblAntislash";
-            this.lblAntislash.Size = new System.Drawing.Size(12, 16);
-            this.lblAntislash.TabIndex = 13;
-            this.lblAntislash.Text = "\\";
-            // 
             // soundBindingSource
             // 
             this.soundBindingSource.DataSource = typeof(CreationDuGrosSon.Sound);
             // 
-            // dataGridViewTextBoxColumn6
+            // filePathDataGridViewTextBoxColumn
             // 
-            this.dataGridViewTextBoxColumn6.DataPropertyName = "FilePath";
-            this.dataGridViewTextBoxColumn6.HeaderText = "File path";
-            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            this.dataGridViewTextBoxColumn6.ReadOnly = true;
+            this.filePathDataGridViewTextBoxColumn.DataPropertyName = "FilePath";
+            this.filePathDataGridViewTextBoxColumn.FillWeight = 1F;
+            this.filePathDataGridViewTextBoxColumn.HeaderText = "File path";
+            this.filePathDataGridViewTextBoxColumn.Name = "filePathDataGridViewTextBoxColumn";
+            this.filePathDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // dataGridViewTextBoxColumn7
+            // typeDataGridViewTextBoxColumn
             // 
-            this.dataGridViewTextBoxColumn7.DataPropertyName = "NameToShow";
-            dataGridViewCellStyle1.BackColor = System.Drawing.Color.Silver;
-            this.dataGridViewTextBoxColumn7.DefaultCellStyle = dataGridViewCellStyle1;
-            this.dataGridViewTextBoxColumn7.HeaderText = "Name to show";
-            this.dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
+            this.typeDataGridViewTextBoxColumn.DataPropertyName = "Type";
+            this.typeDataGridViewTextBoxColumn.FillWeight = 1F;
+            this.typeDataGridViewTextBoxColumn.HeaderText = "Type";
+            this.typeDataGridViewTextBoxColumn.Name = "typeDataGridViewTextBoxColumn";
+            this.typeDataGridViewTextBoxColumn.ReadOnly = true;
             // 
-            // dataGridViewTextBoxColumn8
+            // nameToShowDataGridViewTextBoxColumn
             // 
-            this.dataGridViewTextBoxColumn8.DataPropertyName = "Type";
-            this.dataGridViewTextBoxColumn8.HeaderText = "Type";
-            this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
+            this.nameToShowDataGridViewTextBoxColumn.DataPropertyName = "NameToShow";
+            dataGridViewCellStyle1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.nameToShowDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle1;
+            this.nameToShowDataGridViewTextBoxColumn.FillWeight = 1F;
+            this.nameToShowDataGridViewTextBoxColumn.HeaderText = "Name to show";
+            this.nameToShowDataGridViewTextBoxColumn.Name = "nameToShowDataGridViewTextBoxColumn";
             // 
-            // dataGridViewTextBoxColumn9
+            // maxDistanceDataGridViewTextBoxColumn
             // 
-            this.dataGridViewTextBoxColumn9.DataPropertyName = "MaxDistance";
-            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Silver;
-            this.dataGridViewTextBoxColumn9.DefaultCellStyle = dataGridViewCellStyle2;
-            this.dataGridViewTextBoxColumn9.HeaderText = "MaxDistance";
-            this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
+            this.maxDistanceDataGridViewTextBoxColumn.DataPropertyName = "MaxDistance";
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.maxDistanceDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle2;
+            this.maxDistanceDataGridViewTextBoxColumn.FillWeight = 1F;
+            this.maxDistanceDataGridViewTextBoxColumn.HeaderText = "Max distance";
+            this.maxDistanceDataGridViewTextBoxColumn.Name = "maxDistanceDataGridViewTextBoxColumn";
             // 
-            // dataGridViewTextBoxColumn10
+            // volumeDataGridViewTextBoxColumn
             // 
-            this.dataGridViewTextBoxColumn10.DataPropertyName = "Volume";
-            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Silver;
-            this.dataGridViewTextBoxColumn10.DefaultCellStyle = dataGridViewCellStyle3;
-            this.dataGridViewTextBoxColumn10.HeaderText = "Volume";
-            this.dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
+            this.volumeDataGridViewTextBoxColumn.DataPropertyName = "Volume";
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.volumeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle3;
+            this.volumeDataGridViewTextBoxColumn.FillWeight = 1F;
+            this.volumeDataGridViewTextBoxColumn.HeaderText = "Volume";
+            this.volumeDataGridViewTextBoxColumn.Name = "volumeDataGridViewTextBoxColumn";
+            this.volumeDataGridViewTextBoxColumn.ToolTipText = "Between 0 and 1";
             // 
-            // dataGridViewCheckBoxColumn2
+            // loopableDataGridViewCheckBoxColumn
             // 
-            this.dataGridViewCheckBoxColumn2.DataPropertyName = "Loopable";
+            this.loopableDataGridViewCheckBoxColumn.DataPropertyName = "Loopable";
             dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.BackColor = System.Drawing.Color.Silver;
+            dataGridViewCellStyle4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             dataGridViewCellStyle4.NullValue = false;
-            this.dataGridViewCheckBoxColumn2.DefaultCellStyle = dataGridViewCellStyle4;
-            this.dataGridViewCheckBoxColumn2.HeaderText = "Loopable";
-            this.dataGridViewCheckBoxColumn2.Name = "dataGridViewCheckBoxColumn2";
+            this.loopableDataGridViewCheckBoxColumn.DefaultCellStyle = dataGridViewCellStyle4;
+            this.loopableDataGridViewCheckBoxColumn.FillWeight = 1F;
+            this.loopableDataGridViewCheckBoxColumn.HeaderText = "Loopable";
+            this.loopableDataGridViewCheckBoxColumn.Name = "loopableDataGridViewCheckBoxColumn";
             // 
             // bitRateDataGridViewTextBoxColumn
             // 
             this.bitRateDataGridViewTextBoxColumn.DataPropertyName = "BitRate";
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.Silver;
+            dataGridViewCellStyle5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.bitRateDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle5;
-            this.bitRateDataGridViewTextBoxColumn.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.bitRateDataGridViewTextBoxColumn.FillWeight = 1F;
             this.bitRateDataGridViewTextBoxColumn.HeaderText = "Bit rate";
             this.bitRateDataGridViewTextBoxColumn.Items.AddRange(new object[] {
             "32000",
@@ -309,16 +320,31 @@
             this.bitRateDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.bitRateDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
+            // waveTypeDataGridViewTextBoxColumn
+            // 
+            this.waveTypeDataGridViewTextBoxColumn.DataPropertyName = "WaveType";
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.waveTypeDataGridViewTextBoxColumn.DefaultCellStyle = dataGridViewCellStyle6;
+            this.waveTypeDataGridViewTextBoxColumn.FillWeight = 1F;
+            this.waveTypeDataGridViewTextBoxColumn.HeaderText = "Wave type";
+            this.waveTypeDataGridViewTextBoxColumn.Items.AddRange(new object[] {
+            "D2",
+            "D3"});
+            this.waveTypeDataGridViewTextBoxColumn.Name = "waveTypeDataGridViewTextBoxColumn";
+            this.waveTypeDataGridViewTextBoxColumn.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.waveTypeDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.waveTypeDataGridViewTextBoxColumn.ToolTipText = "D2 for stereo and D3 for mono";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(584, 461);
+            this.ClientSize = new System.Drawing.Size(684, 461);
+            this.Controls.Add(this.dgvFiles);
             this.Controls.Add(this.lblTable);
             this.Controls.Add(this.gbButtons);
             this.Controls.Add(this.tbxInfo);
-            this.Controls.Add(this.dgvFiles);
-            this.MinimumSize = new System.Drawing.Size(600, 500);
+            this.MinimumSize = new System.Drawing.Size(700, 500);
             this.Name = "MainForm";
             this.Text = "Sound Block Creator";
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).EndInit();
@@ -343,28 +369,17 @@
         private System.Windows.Forms.ProgressBar pbConvert;
         private System.Windows.Forms.ProgressBar pbTotal;
         private System.Windows.Forms.Button btnMusic;
-        private System.Windows.Forms.DataGridViewTextBoxColumn filePathDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn nameToShowDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn typeDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn maxDistanceDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn volumeDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn loopableDataGridViewCheckBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
         private System.Windows.Forms.TextBox tbDirectory;
         private System.Windows.Forms.Label lblAntislash;
         private System.Windows.Forms.BindingSource soundBindingSource;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn10;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn filePathDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn typeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameToShowDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn maxDistanceDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn volumeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn loopableDataGridViewCheckBoxColumn;
         private System.Windows.Forms.DataGridViewComboBoxColumn bitRateDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewComboBoxColumn waveTypeDataGridViewTextBoxColumn;
     }
 }
 
