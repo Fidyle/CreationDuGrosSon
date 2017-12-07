@@ -37,6 +37,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.dgvFiles = new System.Windows.Forms.DataGridView();
+            this.soundBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btnAddFiles = new System.Windows.Forms.Button();
             this.tbxInfo = new System.Windows.Forms.TextBox();
             this.btnCreateMod = new System.Windows.Forms.Button();
@@ -50,7 +51,6 @@
             this.btnRemoveFIles = new System.Windows.Forms.Button();
             this.tbOutputDirectory = new System.Windows.Forms.TextBox();
             this.lblTable = new System.Windows.Forms.Label();
-            this.soundBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.filePathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.nameToShowDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -60,8 +60,8 @@
             this.bitRateDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.waveTypeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).BeginInit();
-            this.gbButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.soundBindingSource)).BeginInit();
+            this.gbButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // dgvFiles
@@ -92,6 +92,10 @@
             this.dgvFiles.TabIndex = 1;
             this.dgvFiles.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvFiles_CellEndEdit);
             this.dgvFiles.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.dgvFiles_DataError);
+            // 
+            // soundBindingSource
+            // 
+            this.soundBindingSource.DataSource = typeof(CreationDuGrosSon.Sound);
             // 
             // btnAddFiles
             // 
@@ -243,10 +247,6 @@
             this.lblTable.TabIndex = 7;
             this.lblTable.Text = "Click on gray areas to modify element";
             // 
-            // soundBindingSource
-            // 
-            this.soundBindingSource.DataSource = typeof(CreationDuGrosSon.Sound);
-            // 
             // filePathDataGridViewTextBoxColumn
             // 
             this.filePathDataGridViewTextBoxColumn.DataPropertyName = "FilePath";
@@ -310,8 +310,9 @@
             this.bitRateDataGridViewTextBoxColumn.FillWeight = 1F;
             this.bitRateDataGridViewTextBoxColumn.HeaderText = "Bit rate";
             this.bitRateDataGridViewTextBoxColumn.Items.AddRange(new object[] {
+            "20000",
             "32000",
-            "48000",
+            "44100",
             "64000",
             "96000",
             "160000",
@@ -348,9 +349,9 @@
             this.Name = "MainForm";
             this.Text = "Sound Block Creator";
             ((System.ComponentModel.ISupportInitialize)(this.dgvFiles)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.soundBindingSource)).EndInit();
             this.gbButtons.ResumeLayout(false);
             this.gbButtons.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.soundBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

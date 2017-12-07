@@ -123,38 +123,6 @@ namespace CreationDuGrosSon
                 
                 if (folderBrowser.ShowDialog() == DialogResult.OK)
                 {
-                    /*if (Directory.Exists(folderBrowser.SelectedPath + @"\SoundsForSoundBlock"))
-                    {
-                        if (MessageBox.Show("The selected directory " + folderBrowser.SelectedPath + @"\SoundsForSoundBlock already exists. It needs to be deleted do you want to delete it now? It will be deleted during the creation"
-                                 , "Directory already exists"
-                                 , MessageBoxButtons.YesNo
-                                 , MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            try
-                            {
-                                if (Directory.Exists(folderBrowser.SelectedPath + @"\SoundsForSoundBlock"))
-                                {
-                                    Directory.Delete(folderBrowser.SelectedPath + @"\SoundsForSoundBlock", true);
-                                }
-                                tbOutputDirectory.Text = folderBrowser.SelectedPath + @"\SoundsForSoundBlock";
-                                lastSelectedFolder = folderBrowser.SelectedPath;
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(@"The app couldn't remove the directory """ + folderBrowser.SelectedPath + @"\SoundsForSoundBlock\"" Make sure the app has the right to do so (antivirus for example can block such actions) or delete it manually. Error message: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                        }
-                        else
-                        {
-                            lastSelectedFolder = folderBrowser.SelectedPath;
-                            tbOutputDirectory.Text = folderBrowser.SelectedPath + @"\SoundsForSoundBlock";
-                            return;
-                        }
-                    }
-                    else
-                    {
-                        tbOutputDirectory.Text = folderBrowser.SelectedPath + @"\SoundsForSoundBlock";
-                    }*/
                     tbOutputDirectory.Text = folderBrowser.SelectedPath;
 
                 }
@@ -235,7 +203,7 @@ namespace CreationDuGrosSon
                             {
                                 //Handle file convertion here
                                 outputPath = outputDirecory + @"\Audio\" + aSound.NameToShow;
-                                await convertFile(aSound.FilePath, outputPath, "wav", bs.IndexOf(aSound));
+                                await convertFileTest(aSound.FilePath, outputPath, "wav", bs.IndexOf(aSound));
                             }
 
                             /***
@@ -264,7 +232,7 @@ namespace CreationDuGrosSon
                             writer.WriteString("SoundCategoryDefinition");
                             writer.WriteEndElement();
                             writer.WriteStartElement("SubtypeId");
-                            writer.WriteString("SoundsForSoundBlock");
+                            writer.WriteString(tbDirectory.Text.Replace(" ",String.Empty));
                             writer.WriteEndElement();
                             writer.WriteEndElement();
                             writer.WriteStartElement("Sounds");
@@ -272,7 +240,7 @@ namespace CreationDuGrosSon
                             foreach (Sound aSound in bs)
                             {
                                 writer.WriteStartElement("SoundDesc");
-                                writer.WriteAttributeString("Id", "SBMod" + (bs.IndexOf(aSound) + 1).ToString());
+                                writer.WriteAttributeString("Id", "SBMod" + tbDirectory.Text.Replace(" ", String.Empty) + (bs.IndexOf(aSound) + 1).ToString());
                                 writer.WriteAttributeString("SoundName", "Mod sounds: " + aSound.NameToShow);
                                 writer.WriteEndElement();
                             }
@@ -291,7 +259,7 @@ namespace CreationDuGrosSon
                                 writer.WriteString("AudioDefinition");
                                 writer.WriteEndElement();
                                 writer.WriteStartElement("SubtypeId");
-                                writer.WriteString("SBMod" + (bs.IndexOf(aSound) + 1).ToString());
+                                writer.WriteString("SBMod" + tbDirectory.Text.Replace(" ", String.Empty) + (bs.IndexOf(aSound) + 1).ToString());
                                 writer.WriteEndElement();
                                 writer.WriteEndElement();
                                 writer.WriteStartElement("Category");
@@ -347,7 +315,7 @@ namespace CreationDuGrosSon
         
         /***
          * Conversion of all the files to xwm audio files
-         * 
+         * This is supposed to work but sometimes it fucks up songs with bitrates != 48000 -- needa fix that
          * ***/
         private async Task<bool> convertFile(String pathOfFile, String pathOutput, String format, int indexInBs)
         {
@@ -355,18 +323,20 @@ namespace CreationDuGrosSon
             {
                 FFMpegConverter ffmpeg = new FFMpegConverter();
                 ffmpeg.ConvertProgress += updateProgress;
+                string bitRate = ((Sound)bs[indexInBs]).BitRate;
+
                 Task<bool> task = Task.Run(
                     () => {
-                        ffmpeg.ConvertMedia(pathOfFile, null, pathOutput + "." + format, format, new ConvertSettings() { CustomOutputArgs = "-vn" });
+                        ffmpeg.ConvertMedia(pathOfFile, null, pathOutput + "." + format, format, new ConvertSettings() { CustomOutputArgs = "-vn -ar " + bitRate });
                         return true;
                     }
                 );
+
                 Process process = new Process();
                 process.StartInfo.FileName = "xWMAEncode.exe";
                 process.StartInfo.WorkingDirectory = Environment.CurrentDirectory;
                 process.StartInfo.UseShellExecute = false;
                 process.StartInfo.CreateNoWindow = true;
-                string bitRate = ((Sound)bs[indexInBs]).BitRate;
                 process.StartInfo.Arguments = @"-b " + bitRate + @" """ + pathOutput + "." + format + @""" """ + pathOutput + @".xwm""";
 
                 Task continuation = task.ContinueWith(
@@ -419,14 +389,62 @@ namespace CreationDuGrosSon
                     return false;
                 }
             }
-            /***
-             * Updates progress bar of file convertion (bottom one)
-             * ***/
+        /***
+         * This one only renames .wav to .xwm
+         * 
+         * */
+
+        private async Task convertFileTest(String filePath, String outputPath, String format, int indexInBs)
+        {
+            try
+            {
+                FFMpegConverter ffmpeg = new FFMpegConverter();
+                ffmpeg.ConvertProgress += updateProgress;
+                Task<bool> task = Task.Run(
+                    () => {
+                        ffmpeg.ConvertMedia(filePath, null, outputPath + "." + format, format, new ConvertSettings() { CustomOutputArgs = "-vn -ar " + ((Sound)bs[indexInBs]).BitRate });
+                        return true;
+                    }
+                );
+                
+                await task;
+                File.Move(outputPath + "." + format, outputPath + ".xwm");
+                pbTotal.Invoke(new Action(() => { pbTotal.Value += Convert.ToInt32(pbTotal.Maximum / bs.Count); }));
+                if (indexInBs == bs.IndexOf(bs[bs.Count - 1]))
+                {
+                    if (File.Exists(Application.StartupPath + @"\ffmpeg.exe"))
+                    {
+                        File.Delete(Application.StartupPath + @"\ffmpeg.exe");
+                    }
+                    dgvFiles.Invoke(new Action(() => { dgvFiles.Enabled = true; }));
+                }
+                if (pbTotal.Value == Convert.ToInt32(pbTotal.Maximum / bs.Count) * bs.Count)
+                {
+                    if (MessageBox.Show("The mod has been created! Do you want to open the directory ?", "Mod created", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                    {
+                        Process.Start("explorer.exe", tbOutputDirectory.Text + @"\" + tbDirectory.Text);
+                    }
+
+                    pbConvert.Invoke(new Action(() => { pbConvert.Value = pbConvert.Minimum; }));
+                    pbTotal.Invoke(new Action(() => { pbTotal.Value = pbTotal.Minimum; }));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("There was an error during the convertion of the files. Make sure that the app has the right to modify files.\n\n Error message: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+        }
+
+        /***
+        * Updates progress bar of file convertion (bottom one)
+        * ***/
         private void updateProgress(object sender, ConvertProgressEventArgs e)
         {
             pbConvert.Invoke(new Action(() =>
             {
-                pbConvert.Value = Convert.ToInt32(((double)e.Processed.Ticks / (double)e.TotalDuration.Ticks) * pbConvert.Maximum*0.9);
+                //pbConvert.Value = Convert.ToInt32(((double)e.Processed.Ticks / (double)e.TotalDuration.Ticks) * pbConvert.Maximum * 0.9);
+                pbConvert.Value = Convert.ToInt32(((double)e.Processed.Ticks / (double)e.TotalDuration.Ticks) * pbConvert.Maximum);
             }));
         }
 

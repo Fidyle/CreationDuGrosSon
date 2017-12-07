@@ -22,7 +22,7 @@ namespace CreationDuGrosSon
             this.maxDistance = 100;
             this.volume = 1.00;
             this.loopable = true;
-            this.bitRate = "48000";
+            this.bitRate = "44100";
             this.waveType = "D2";
             
         }
